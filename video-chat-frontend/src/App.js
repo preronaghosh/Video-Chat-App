@@ -1,6 +1,14 @@
 import './App.css';
 import { useEffect } from 'react';
 import { connectWithWebSocket } from './utils/wssConnection/wssConnection';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import LoginPage from './LoginPage/LoginPage';
+import Dashboard from './Dashboard/Dashboard';
+
+const router = createBrowserRouter([
+  { path: "/", element: <LoginPage /> },
+  { path: "/dashboard", element: <Dashboard />}
+]);
 
 function App() {
   useEffect(() => {
@@ -8,8 +16,8 @@ function App() {
   }, []);
   
   return (
-    <div className="App">
-      This is a React App!
+    <div>
+      <RouterProvider router={router}/>
     </div>
   );
 }
