@@ -11,6 +11,7 @@ import './LoginPage.css';
 import UsernameInput from './components/UsernameInput';
 import SubmitButton from './components/SubmitButton';
 import { dashboardActions } from '../store/dashboard-slice';
+import { registerNewUser } from '../utils/wssConnection/wssConnection';
 
 
 const LoginPage = () => {
@@ -19,8 +20,9 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   
   const handleSubmitButtonClicked = () => {
-    navigate('/dashboard');
+    registerNewUser(username);
     dispatch(dashboardActions.setUsername(username));
+    navigate('/dashboard');
   };
 
   return (
@@ -32,8 +34,8 @@ const LoginPage = () => {
         <div className='login-page_title_container'>
           Get On Board!
         </div>
-        <UsernameInput username={username} setUsername={setUsername}/>
-        <SubmitButton handleSubmitButtonClicked={handleSubmitButtonClicked}/>
+        <UsernameInput username={username} setUsername={setUsername} />
+        <SubmitButton handleSubmitButtonClicked={handleSubmitButtonClicked} />
       </div>
     </div>
   )
