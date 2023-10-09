@@ -5,7 +5,7 @@ const dashboardSlice = createSlice({
     initialState : { username : '' },
     reducers : {
         setUsername(state, action) {
-            state.username = action.username;
+            state.username = action.payload;
         }
     }
 });

@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import dashboardSlice  from "./dashboard-slice";
-import { dashboardActions } from "./dashboard-slice";
+import dashboardReducer from "./dashboard-slice";
 
 const store = configureStore({
         reducer: {
-            myDashboard : dashboardSlice
-        }
+            myDashboard : dashboardReducer
+        },
+        devTools: process.env.NODE_ENV !== 'production', // Enable DevTools in non-production environment
     }
 );
 
