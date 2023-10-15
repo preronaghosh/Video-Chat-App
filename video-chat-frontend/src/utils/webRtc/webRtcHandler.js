@@ -1,12 +1,6 @@
 import store from "../../store/index";
 import { localSteamActions } from "../../store/local-stream-slice";
-
-const callStates = {
-    'Unvailable' : 0,
-    'Available' : 1,
-    'Requested' : 2,
-    'InProgress' : 3
-};
+import { callStates } from "../../store/local-stream-slice";
 
 const defaultConstraints = {
     video: true,

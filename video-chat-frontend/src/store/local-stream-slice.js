@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Store the different possible call states
-const callStates = {
+export const callStates = {
     'Unvailable' : 0,
     'Available' : 1,
     'Requested' : 2,
