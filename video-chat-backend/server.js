@@ -51,4 +51,15 @@ io.on('connection', (socket) => {
             activePeers: peers
         });
     });
+
+    // Listener for pre-offer request from callee towards caller
+    socket.on('pre-offer', (data) => {
+        console.log('pre-offer request sent from server to callee');
+        
+        // Send caller details for pre-offer request to Callee
+        io.to(data.callee.socketId).emit('pre-offer', {
+            callerUsername: data.caller.username,
+            callerSocketId: socket.id
+        });
+    });
 });

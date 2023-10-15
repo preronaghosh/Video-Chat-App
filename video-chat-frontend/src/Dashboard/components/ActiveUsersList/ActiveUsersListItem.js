@@ -1,8 +1,12 @@
 import './ActiveUsersList.css';
 import userAvatar from '../../../assets/userAvatar.png';
+import { callAnotherUser } from '../../../utils/webRtc/webRtcHandler';
 
 const ActiveUsersListItem = (props) => {
-    const handleUserClick = () => {};
+    const handleUserClick = () => {
+        // call this user
+        callAnotherUser(props.activeUser); 
+    };
 
     return (
         <div className='active_user_list_item' onClick={handleUserClick}>

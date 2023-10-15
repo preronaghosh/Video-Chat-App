@@ -10,13 +10,24 @@ export const callStates = {
 
 const localStreamSlice = createSlice({
     name : 'localStream',
-    initialState: { localStream : null, callState : callStates.Unvailable },
+    initialState: { 
+        localStream : null, 
+        callState : callStates.Unvailable,
+        callingDialogVisible: false,
+        callerUsername: ''
+    },
     reducers: {
         setLocalStream(state, action) {
             state.localStream = action.payload
         },
         setCallState(state, action) {
             state.callState = action.payload;
+        },
+        setCallingDialogVisible(state, action) {
+            state.callingDialogVisible = action.payload;
+        },
+        setCallerUsername(state, action) {
+            state.callerUsername = action.payload;
         }
     }    
 });
