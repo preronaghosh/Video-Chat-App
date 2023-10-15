@@ -14,7 +14,11 @@ const localStreamSlice = createSlice({
         localStream : null, 
         callState : callStates.Unvailable,
         callingDialogVisible: false,
-        callerUsername: ''
+        callerUsername: '',
+        callRejectionDetails: {
+            rejected: false,
+            reason: ''
+        }
     },
     reducers: {
         setLocalStream(state, action) {
@@ -28,9 +32,13 @@ const localStreamSlice = createSlice({
         },
         setCallerUsername(state, action) {
             state.callerUsername = action.payload;
+        },
+        setCallRejectionDetails(state, action) {
+            state.callRejectionDetails.rejected = action.payload.rejected;
+            state.callRejectionDetails.reason = action.payload.reason;
         }
     }    
 });
 
-export const localSteamActions = localStreamSlice.actions;
+export const localStreamActions = localStreamSlice.actions;
 export default localStreamSlice.reducer;

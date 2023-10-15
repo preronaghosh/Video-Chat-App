@@ -1,7 +1,7 @@
 import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
-import { handleIncomingPreOffer } from '../webRtc/webRtcHandler';
+import { handleIncomingPreOffer, handleIncomingPreOfferAnswer } from '../webRtc/webRtcHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -33,6 +33,10 @@ export const connectWithWebSocket = () => {
     socket.on('pre-offer', (data) => {
         handleIncomingPreOffer(data);
     });
+
+    socket.on('pre-offer-answer', (data) => {
+        handleIncomingPreOfferAnswer(data);
+    });
 };
 
 export const registerNewUser = (username) => {
@@ -45,4 +49,8 @@ export const registerNewUser = (username) => {
 // Current user emits pre-offer request to another user (server)
 export const sendPreOffer = (data) => {
     socket.emit('pre-offer', data);
+};
+
+export const sendPreOfferAnswer = (data) => {
+    socket.emit('pre-offer-answer', data);
 };

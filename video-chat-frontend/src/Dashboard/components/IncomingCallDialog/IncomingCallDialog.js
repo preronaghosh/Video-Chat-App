@@ -1,9 +1,15 @@
+import { acceptIncomingCallRequest, rejectIncomingCallRequest } from '../../../utils/webRtc/webRtcHandler';
 import './IncomingCallDialog.css';
 
 const IncomingCallDialog = (props) => {
+
     const acceptButtonHandler = () => {
+        acceptIncomingCallRequest();
     };
-    const rejectButtonHandler = () => {};
+    
+    const rejectButtonHandler = () => {
+        rejectIncomingCallRequest();
+    };
 
     return (
         <div className='direct_call_dialog background_secondary_color'>

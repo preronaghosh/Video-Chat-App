@@ -62,4 +62,14 @@ io.on('connection', (socket) => {
             callerSocketId: socket.id
         });
     });
+
+    // Server receives pre-offer answer from Callee and then has to send that to the Caller
+    socket.on('pre-offer-answer', (data) => {
+        console.log('Received pre-offer answer');
+
+        // Server gets { 'callerSocketId', 'answer' } as part of data from Callee
+        io.to(data.callerSocketId).emit('pre-offer-answer', {
+            answer: data.answer
+        });
+    });
 });
