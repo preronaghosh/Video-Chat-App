@@ -3,6 +3,7 @@ import ActiveUsersListItem from './ActiveUsersListItem';
 import { useSelector } from 'react-redux'; 
 
 const ActiveUsersList = () => {
+  // Get activeUsers state from Redux Toolkit store
   const activeUsers = useSelector(state => state.myDashboard.activeUsers);
 
   return (

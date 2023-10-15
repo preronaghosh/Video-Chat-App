@@ -11,7 +11,9 @@ const broadcastEventTypes = {
 
 const broadcastEventsHandler = (data) => {
     if(data.event === broadcastEventTypes.ACTIVE_USERS) {
-        store.dispatch(dashboardActions.setActiveUsers(data.activePeers));
+        // Add new peer for rendering a list other than the current user
+        const newActiveUsers = data.activePeers.filter(peer => peer.socket !== socket.id);
+        store.dispatch(dashboardActions.setActiveUsers(newActiveUsers));
     }
 } 
 
