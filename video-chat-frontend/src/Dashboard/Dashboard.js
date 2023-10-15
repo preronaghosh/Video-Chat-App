@@ -3,8 +3,9 @@ import logo from '../assets/logo.png';
 import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 import { getLocalStream } from '../utils/webRtc/webRtcHandler';
 import { useEffect } from 'react';
+import DirectCall from './components/DirectCall/DirectCall';
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   useEffect(() => {
     getLocalStream();
   }, []);
@@ -13,7 +14,7 @@ const Dashboard = (props) => {
     <div className='dashboard_container background_main_color'>
       <div className='dashboard_left_section'>
         <div className='dashboard_content_container'>
-          Content
+          <DirectCall />
         </div>
         <div className='dashboard_rooms_container background_secondary_color'>
           Rooms
