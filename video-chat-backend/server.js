@@ -72,4 +72,25 @@ io.on('connection', (socket) => {
             answer: data.answer
         });
     });
+
+    // Listener for webRtc offer 
+    socket.on('webRtc-offer', (data) => {
+        // data format here: { calleeSocketId, offer }
+        console.log("handling webrtc offer");
+
+        // send offer to callee who accepted the pre-offer
+        io.to(data.calleeSocketId).emit('webRtc-offer', {
+            offer: data.offer
+        });
+    });
+
+    socket.on('webRtc-answer', (data) => {
+        console.log("received webrtc answer");
+        // data format here: { callerSocketId, answer }
+
+        io.to(data.callerSocketId).emit('webRtc-answer', {
+            answer: data.answer
+        });
+
+    });
 });

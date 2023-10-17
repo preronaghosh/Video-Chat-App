@@ -1,7 +1,7 @@
 import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
-import { handleIncomingPreOffer, handleIncomingPreOfferAnswer } from '../webRtc/webRtcHandler';
+import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer } from '../webRtc/webRtcHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -37,6 +37,15 @@ export const connectWithWebSocket = () => {
     socket.on('pre-offer-answer', (data) => {
         handleIncomingPreOfferAnswer(data);
     });
+
+    // listener for actual webrtc offer
+    socket.on('webRtc-offer', (data) => {
+        handleIncomingWebRtcOffer(data);
+    });
+
+    socket.on('webRtc-answer', (data) => {
+        handleIncomingAnswer(data);
+    });
 };
 
 export const registerNewUser = (username) => {
@@ -53,4 +62,14 @@ export const sendPreOffer = (data) => {
 
 export const sendPreOfferAnswer = (data) => {
     socket.emit('pre-offer-answer', data);
+};
+
+// when caller wants to send callee the actual webRtc offer
+export const sendWebRtcOffer = (data) => {
+    socket.emit('webRtc-offer', data);
+};
+
+// When callee accepts the webRtc offer
+export const sendWebRtcAnswer = (data) => {
+    socket.emit('webRtc-answer', data);
 };

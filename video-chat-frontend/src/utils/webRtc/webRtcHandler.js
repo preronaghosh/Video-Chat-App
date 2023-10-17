@@ -1,6 +1,6 @@
 import store from "../../store/index";
 import { localStreamActions, callStates } from "../../store/local-stream-slice";
-import { sendPreOffer, sendPreOfferAnswer } from "../wssConnection/wssConnection";
+import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer } from "../wssConnection/wssConnection";
 
 let connectedUserSocketId; // Stores currently connected user on a direct call
 let peerConnection; 
@@ -98,6 +98,7 @@ export const handleIncomingPreOfferAnswer = (data) => {
     if (data.answer === preOfferAnswers.Accepted) {
         
         // proceed with sending actual webRTC offer
+        sendOffer();
 
     } else if (data.answer === preOfferAnswers.Rejected) {
 
@@ -155,4 +156,34 @@ const createPeerConnection = () => {
     peerConnection.onicecandidate = (event) => {
         // send our ice candidates to other connected users
     };
+};
+
+const sendOffer = async () => {
+    const offer = await peerConnection.createOffer();
+    // console.log(offer); // debug
+    await peerConnection.setLocalDescription(offer);
+
+    sendWebRtcOffer({
+        calleeSocketId: connectedUserSocketId,
+        offer: offer
+    });
+};  
+
+// Handles incoming actual webRtc offer 
+export const handleIncomingWebRtcOffer = async (data) => {
+    await peerConnection.setRemoteDescription(data.offer);
+
+    // Callee creates an answer and sets its local description
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+
+    // Need to send the answer to the caller
+    sendWebRtcAnswer({
+        callerSocketId: connectedUserSocketId,
+        answer: answer
+    });
+}; 
+
+export const handleIncomingAnswer = async (data) => {
+    await peerConnection.setRemoteDescription(data.answer);
 };
