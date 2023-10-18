@@ -40,6 +40,7 @@ export const connectWithWebSocket = () => {
 
     // listener for actual webrtc offer
     socket.on('webRtc-offer', (data) => {
+        console.log("Here 1");
         handleIncomingWebRtcOffer(data);
     });
 

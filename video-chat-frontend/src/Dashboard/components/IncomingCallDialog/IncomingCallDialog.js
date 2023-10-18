@@ -4,6 +4,7 @@ import './IncomingCallDialog.css';
 const IncomingCallDialog = (props) => {
 
     const acceptButtonHandler = () => {
+        console.log("Clicked accept button");
         acceptIncomingCallRequest();
     };
     

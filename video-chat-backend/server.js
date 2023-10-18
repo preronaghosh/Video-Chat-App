@@ -65,7 +65,6 @@ io.on('connection', (socket) => {
 
     // Server receives pre-offer answer from Callee and then has to send that to the Caller
     socket.on('pre-offer-answer', (data) => {
-        console.log('Received pre-offer answer');
 
         // Server gets { 'callerSocketId', 'answer' } as part of data from Callee
         io.to(data.callerSocketId).emit('pre-offer-answer', {
@@ -79,13 +78,14 @@ io.on('connection', (socket) => {
         console.log("handling webrtc offer");
 
         // send offer to callee who accepted the pre-offer
+        console.log(`CalleeSocketId: ${data.calleeSocketId}`);
         io.to(data.calleeSocketId).emit('webRtc-offer', {
             offer: data.offer
         });
+
     });
 
     socket.on('webRtc-answer', (data) => {
-        console.log("received webrtc answer");
         // data format here: { callerSocketId, answer }
 
         io.to(data.callerSocketId).emit('webRtc-answer', {

@@ -72,7 +72,6 @@ export const callAnotherUser = (calleeDetails) => {
 
 // Methods for handling pre-offer requests and responses
 export const handleIncomingPreOffer = (data) => {   // Method to handle when another user is sending a pre-offer request to current user
-
     if (isCallPossible()) {
         connectedUserSocketId = data.callerSocketId;
         store.dispatch(localStreamActions.setCallState(callStates.Requested));
@@ -84,7 +83,6 @@ export const handleIncomingPreOffer = (data) => {   // Method to handle when ano
             callerSocketId: data.callerSocketId, 
             answer: preOfferAnswers.NotAvailable
         });
-
     }
 };
 
@@ -100,21 +98,18 @@ export const handleIncomingPreOfferAnswer = (data) => {
         // proceed with sending actual webRTC offer
         sendOffer();
 
-    } else if (data.answer === preOfferAnswers.Rejected) {
-
-        rejectionReason = "User rejected the call";
-
     } else {
-        
-        rejectionReason = "User unavailable to pick up the call";
+        if (data.answer === preOfferAnswers.NotAvailable) {
+            rejectionReason = "User unavailable to pick up calls right now!";
+        } else {
+            rejectionReason = "User rejected the call!";
+        }
+        store.dispatch(localStreamActions.setCallRejectionDetails({
+            rejected: true,
+            reason: rejectionReason
+        }));
+        resetCallData();
     }
-
-    // Update the state in store so that the rejection reason can be displayed to the user
-    store.dispatch(localStreamActions.setCallRejectionDetails({
-        rejected: true,
-        reason: rejectionReason
-    }));
-    resetCallData();
 };
 
 // Called from react component that monitors the Accept button state
@@ -137,7 +132,7 @@ export const rejectIncomingCallRequest = () => {
 
 // Peer Connection related methods
 const createPeerConnection = () => {
-    peerConnection = RTCPeerConnection(peerConnectionConfig);
+    peerConnection = new RTCPeerConnection(peerConnectionConfig);
     
     const localStream = store.getState().callLocalStream.localStream;
     
@@ -155,6 +150,7 @@ const createPeerConnection = () => {
 
     peerConnection.onicecandidate = (event) => {
         // send our ice candidates to other connected users
+        console.log("Received ICE candidate from STUN server");
         if (event.candidate) {
             sendIceCandidateToRemotePeer({
                 candidate: event.candidate,
@@ -162,13 +158,22 @@ const createPeerConnection = () => {
             });
         }
     };
+
+    // when ICE candidates have been updated
+    peerConnection.onconnectionstatechange = (event) => {
+        if (peerConnection.connectionState === 'connected') {
+            console.log("Connection successfully established with remote peer");
+        }
+    };
 };
 
 const sendOffer = async () => {
+    console.log("Sending offer");
     const offer = await peerConnection.createOffer();
-    // console.log(offer); // debug
+    console.log(offer); // debug
     await peerConnection.setLocalDescription(offer);
 
+    console.log(`CalleeSocketId at frontend is: ${connectedUserSocketId}`);
     sendWebRtcOffer({
         calleeSocketId: connectedUserSocketId,
         offer: offer
@@ -177,11 +182,14 @@ const sendOffer = async () => {
 
 // Handles incoming actual webRtc offer 
 export const handleIncomingWebRtcOffer = async (data) => {
+    console.log("handling incoming offer");
     await peerConnection.setRemoteDescription(data.offer);
+    console.log("remote description set");
 
     // Callee creates an answer and sets its local description
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
+    console.log("local description set");
 
     // Need to send the answer to the caller
     sendWebRtcAnswer({
@@ -191,11 +199,19 @@ export const handleIncomingWebRtcOffer = async (data) => {
 }; 
 
 export const handleIncomingAnswer = async (data) => {
-    await peerConnection.setRemoteDescription(data.answer);
+    console.log("handling incoming answer");
+    try {
+        await peerConnection.setRemoteDescription(data.answer);
+    }
+    catch (error) {
+        console.log("Error setting remote description");
+    }
 };
 
 export const handleIncomingIceCandidate = async (data) => {
+    console.log("inside handIncomingIceCandidate()");
     try {
+        console.log("Adding ICE candidates");
         await peerConnection.addIceCandidate(data.candidate);
     } catch (error) {
         console.error('Error occured during reception of ICE candidate from remote peer', error);
