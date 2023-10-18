@@ -150,7 +150,6 @@ const createPeerConnection = () => {
 
     peerConnection.onicecandidate = (event) => {
         // send our ice candidates to other connected users
-        console.log("Received ICE candidate from STUN server");
         if (event.candidate) {
             sendIceCandidateToRemotePeer({
                 candidate: event.candidate,
@@ -168,9 +167,8 @@ const createPeerConnection = () => {
 };
 
 const sendOffer = async () => {
-    console.log("Sending offer");
     const offer = await peerConnection.createOffer();
-    console.log(offer); // debug
+    // console.log(offer); // debug
     await peerConnection.setLocalDescription(offer);
 
     console.log(`CalleeSocketId at frontend is: ${connectedUserSocketId}`);
@@ -182,14 +180,11 @@ const sendOffer = async () => {
 
 // Handles incoming actual webRtc offer 
 export const handleIncomingWebRtcOffer = async (data) => {
-    console.log("handling incoming offer");
     await peerConnection.setRemoteDescription(data.offer);
-    console.log("remote description set");
 
     // Callee creates an answer and sets its local description
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
-    console.log("local description set");
 
     // Need to send the answer to the caller
     sendWebRtcAnswer({
@@ -199,7 +194,6 @@ export const handleIncomingWebRtcOffer = async (data) => {
 }; 
 
 export const handleIncomingAnswer = async (data) => {
-    console.log("handling incoming answer");
     try {
         await peerConnection.setRemoteDescription(data.answer);
     }
@@ -209,7 +203,6 @@ export const handleIncomingAnswer = async (data) => {
 };
 
 export const handleIncomingIceCandidate = async (data) => {
-    console.log("inside handIncomingIceCandidate()");
     try {
         console.log("Adding ICE candidates");
         await peerConnection.addIceCandidate(data.candidate);

@@ -78,7 +78,6 @@ io.on('connection', (socket) => {
         console.log("handling webrtc offer");
 
         // send offer to callee who accepted the pre-offer
-        console.log(`CalleeSocketId: ${data.calleeSocketId}`);
         io.to(data.calleeSocketId).emit('webRtc-offer', {
             offer: data.offer
         });
