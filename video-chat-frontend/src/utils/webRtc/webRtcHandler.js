@@ -1,6 +1,6 @@
 import store from "../../store/index";
 import { localStreamActions, callStates } from "../../store/local-stream-slice";
-import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer } from "../wssConnection/wssConnection";
+import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer, sendIceCandidateToRemotePeer } from "../wssConnection/wssConnection";
 
 let connectedUserSocketId; // Stores currently connected user on a direct call
 let peerConnection; 
@@ -155,6 +155,12 @@ const createPeerConnection = () => {
 
     peerConnection.onicecandidate = (event) => {
         // send our ice candidates to other connected users
+        if (event.candidate) {
+            sendIceCandidateToRemotePeer({
+                candidate: event.candidate,
+                connectedUserSocketId: connectedUserSocketId
+            });
+        }
     };
 };
 
@@ -186,4 +192,12 @@ export const handleIncomingWebRtcOffer = async (data) => {
 
 export const handleIncomingAnswer = async (data) => {
     await peerConnection.setRemoteDescription(data.answer);
+};
+
+export const handleIncomingIceCandidate = async (data) => {
+    try {
+        await peerConnection.addIceCandidate(data.candidate);
+    } catch (error) {
+        console.error('Error occured during reception of ICE candidate from remote peer', error);
+    }
 };

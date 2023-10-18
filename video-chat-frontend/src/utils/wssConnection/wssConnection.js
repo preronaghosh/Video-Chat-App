@@ -1,7 +1,7 @@
 import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
-import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer } from '../webRtc/webRtcHandler';
+import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer, handleIncomingIceCandidate } from '../webRtc/webRtcHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -46,6 +46,11 @@ export const connectWithWebSocket = () => {
     socket.on('webRtc-answer', (data) => {
         handleIncomingAnswer(data);
     });
+
+    // User receives the ICE candidate
+    socket.on('webRtc-candidate', (data) => {
+        handleIncomingIceCandidate(data);
+    });
 };
 
 export const registerNewUser = (username) => {
@@ -72,4 +77,9 @@ export const sendWebRtcOffer = (data) => {
 // When callee accepts the webRtc offer
 export const sendWebRtcAnswer = (data) => {
     socket.emit('webRtc-answer', data);
+};
+
+// Send caller's ICE candidate to Callee
+export const sendIceCandidateToRemotePeer = (data) => {
+    socket.emit('webRtc-candidate', data);
 };

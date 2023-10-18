@@ -91,6 +91,12 @@ io.on('connection', (socket) => {
         io.to(data.callerSocketId).emit('webRtc-answer', {
             answer: data.answer
         });
+    });
 
+    // Server receives ICE candidate from Remote peer
+    socket.on('webRtc-candidate', (data) => {
+        io.to(data.connectedUserSocketId).emit('webRtc-candidate', {
+            candidate : data.candidate
+        });
     });
 });
