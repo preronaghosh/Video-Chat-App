@@ -12,12 +12,14 @@
 }
 
 .active_user_list_item:hover {
-  background-color: #8a85ff;
+  /* background-color: #8a85ff; */
+  color: rgb(118, 115, 115);
+  cursor: pointer;
 }
 
 .active_user_list_image_container {
-  width: 60px;
-  margin-left: 40px;
+  width: 55px;
+  margin-left: 8px;
   margin-right: 40px;
 }
 
