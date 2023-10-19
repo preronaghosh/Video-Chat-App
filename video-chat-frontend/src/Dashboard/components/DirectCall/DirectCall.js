@@ -8,6 +8,7 @@ import IncomingCallDialog from "../IncomingCallDialog/IncomingCallDialog";
 import CallingDialog from '../CallingDialog/CallingDialog';
 import CallRejectedDialog from "../CallRejectedDialog/CallRejectedDialog";
 import { callStates } from "../../../store/local-stream-slice";
+import VideoButtons from "../VideoButtons/VideoButtons";
 
 
 const DirectCall = () => {
@@ -27,6 +28,7 @@ const DirectCall = () => {
             {callRejectionDetails.rejected && <CallRejectedDialog />}
             {currentCallState === callStates.Requested && <IncomingCallDialog callerUsername={callerUsername}/>}
             {callingDialogVisibility && <CallingDialog />}
+            <VideoButtons />
         </Fragment>
     );
 };
