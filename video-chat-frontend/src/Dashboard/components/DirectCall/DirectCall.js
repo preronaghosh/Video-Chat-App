@@ -18,11 +18,12 @@ const DirectCall = () => {
     const callerUsername = useSelector(state => state.callLocalStream.callerUsername);
     const currentCallState = useSelector(state => state.callLocalStream.callState);
     const callRejectionDetails = useSelector(state => state.callLocalStream.callRejectionDetails);
+    const remoteCallStream = useSelector(state => state.callLocalStream.remoteStream);
     
     return (
         <Fragment>
             <LocalVideoView localStream={localStream}/>
-            {/* {callStream && <RemoteVideoView remoteStream={callStream}/>} */}
+            {remoteCallStream && <RemoteVideoView remoteStream={remoteCallStream}/>}
             {callRejectionDetails.rejected && <CallRejectedDialog />}
             {currentCallState === callStates.Requested && <IncomingCallDialog callerUsername={callerUsername}/>}
             {callingDialogVisibility && <CallingDialog />}

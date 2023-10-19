@@ -118,6 +118,8 @@ export const acceptIncomingCallRequest = () => {
         callerSocketId: connectedUserSocketId, 
         answer: preOfferAnswers.Accepted
     });
+
+    store.dispatch(localStreamActions.setCallState(callStates.InProgress));
 }; 
 
 // Called from react component that monitors the Reject button state
@@ -146,6 +148,7 @@ const createPeerConnection = () => {
         const remoteStream = event.streams[0]; 
         const remoteTrack = event.track; 
         // add stream to redux store  
+        store.dispatch(localStreamActions.setRemoteStream(remoteStream));
     };
 
     peerConnection.onicecandidate = (event) => {

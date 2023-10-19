@@ -18,7 +18,8 @@ const localStreamSlice = createSlice({
         callRejectionDetails: {
             rejected: false,
             reason: ''
-        }
+        },
+        remoteStream : null
     },
     reducers: {
         setLocalStream(state, action) {
@@ -36,6 +37,9 @@ const localStreamSlice = createSlice({
         setCallRejectionDetails(state, action) {
             state.callRejectionDetails.rejected = action.payload.rejected;
             state.callRejectionDetails.reason = action.payload.reason;
+        },
+        setRemoteStream(state, action) {
+            state.remoteStream = action.payload;
         }
     }    
 });
