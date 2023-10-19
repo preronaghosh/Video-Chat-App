@@ -1,4 +1,3 @@
-import './App.css';
 import { useEffect } from 'react';
 import { connectWithWebSocket } from './utils/wssConnection/wssConnection';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
