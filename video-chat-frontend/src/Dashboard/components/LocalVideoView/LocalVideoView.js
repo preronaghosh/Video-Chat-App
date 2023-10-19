@@ -3,8 +3,8 @@ import { useRef, useEffect } from 'react';
 // Inline CSS styles for video container and tag
 const styles = {
     videoContainer: {
-      width: '100px',
-      height: '100px',
+      width: '200px',
+      height: '150px',
       borderRadius: '8px',
       position: 'absolute',
       top: '5%',
@@ -12,7 +12,8 @@ const styles = {
     },
     videoElement: {
       width: '100%',
-      height: '100%'
+      height: '100%',
+      borderRadius: '10px'
     }
 };
 
@@ -31,7 +32,7 @@ const LocalVideoView = props => {
         }
     }, [props.localStream]);
     return (
-        <div style={styles.videoContainer} className='background_secondary_color'>
+        <div style={styles.videoContainer} >
             <video style={styles.videoElement} ref={localVideoRef} autoPlay muted />
         </div>
     )

@@ -1,4 +1,3 @@
-import './ActiveUsersList.css';
 import userAvatar from '../../../assets/userAvatar.png';
 import { callAnotherUser } from '../../../utils/webRtc/webRtcHandler';
 
