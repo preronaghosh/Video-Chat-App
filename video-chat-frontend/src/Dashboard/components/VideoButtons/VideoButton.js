@@ -19,8 +19,12 @@ const styles = {
 };
 
 const VideoButton = (props) => {
+  const clickHandler = () => {
+    props.onClickHandler();
+  };
+
   return (
-    <button style={styles.button} on={props.onClickHandler}>
+    <button style={styles.button} onClick={clickHandler}>
       {props.children}
     </button>
   )

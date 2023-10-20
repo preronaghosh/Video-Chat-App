@@ -19,7 +19,9 @@ const localStreamSlice = createSlice({
             rejected: false,
             reason: ''
         },
-        remoteStream : null
+        remoteStream : null,
+        localCameraEnabled: true,
+        localMicrophoneEnabled: true
     },
     reducers: {
         setLocalStream(state, action) {
@@ -40,6 +42,12 @@ const localStreamSlice = createSlice({
         },
         setRemoteStream(state, action) {
             state.remoteStream = action.payload;
+        },
+        setLocalCameraEnabled(state, action) {
+            state.localCameraEnabled = action.payload;
+        },
+        setLocalMicrophoneEnabled(state, action) {
+            state.localMicrophoneEnabled = action.payload;
         }
     }    
 });

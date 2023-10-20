@@ -1,5 +1,9 @@
-import { MdCallEnd, MdMic, MdMicOff, MdVideocam, MdVideocamOff, MdVideoLabel, MdVideoCall, MdVideoCameraFront } from 'react-icons/md';
+import { MdCallEnd, MdMic, MdMicOff, MdVideocam, MdVideocamOff, MdVideoLabel, MdVideoCall } from 'react-icons/md';
 import VideoButton from './VideoButton';  
+
+// Redux related hooks
+import { useDispatch, useSelector } from 'react-redux';
+import { localStreamActions } from '../../../store/local-stream-slice';
 
 const styles = {
     buttonContainer: {
@@ -16,16 +20,31 @@ const styles = {
 };
 
 const VideoButtons = () => {
+  const dispatch = useDispatch();
+  const microphoneState = useSelector(state => state.callLocalStream.localMicrophoneEnabled);
+  const cameraState = useSelector(state => state.callLocalStream.localCameraEnabled);
+  const localStream = useSelector(state => state.callLocalStream.localStream);
+
+  const microphoneClickHandler = () => {
+    localStream.getAudioTracks()[0].enabled = !microphoneState;
+    dispatch(localStreamActions.setLocalMicrophoneEnabled(!microphoneState));
+  };
+
+  const cameraClickHandler = () => {
+    localStream.getVideoTracks()[0].enabled = !cameraState;
+    dispatch(localStreamActions.setLocalCameraEnabled(!cameraState));    
+  };
+
   return (
     <div style={styles.buttonContainer}>
-        <VideoButton>
-          <MdMic style={styles.icon}/>
+        <VideoButton onClickHandler={microphoneClickHandler}>
+          {microphoneState ? <MdMic style={styles.icon} /> : <MdMicOff style={styles.icon}/>}
         </VideoButton>
         <VideoButton>
           <MdCallEnd style={styles.icon}/>
         </VideoButton>
-        <VideoButton>
-          <MdVideoCameraFront style={styles.icon}/>
+        <VideoButton onClickHandler={cameraClickHandler}>
+          {cameraState ? <MdVideocam style={styles.icon} /> : <MdVideocamOff style={styles.icon}/>}
         </VideoButton>
         <VideoButton>
           <MdVideoLabel style={styles.icon}/>
