@@ -3,7 +3,7 @@ import { useRef, useEffect } from 'react';
 // Inline CSS styles for video container and tag
 const styles = {
     videoContainer: {
-      width: '200px',
+      width: '150px',
       height: '150px',
       borderRadius: '8px',
       position: 'absolute',
@@ -12,8 +12,7 @@ const styles = {
     },
     videoElement: {
       width: '100%',
-      height: '100%',
-      borderRadius: '10px'
+      height: '100%'
     }
 };
 

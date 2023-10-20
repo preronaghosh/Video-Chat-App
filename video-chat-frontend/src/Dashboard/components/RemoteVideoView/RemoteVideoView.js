@@ -3,12 +3,13 @@ import { useRef, useEffect } from 'react';
 // Inline CSS styles for video container and tag
 const styles = {
     videoContainer: {
-      width: '100%',
-      height: '100%'
+        width: '100%',
+        height: '100%'
     },
     videoElement: {
-      width: '100%',
-      height: '100%'
+        padding: '0',
+        width: '100%',
+        height: '100%'
     }
   };
 
@@ -27,8 +28,8 @@ const RemoteVideoView = props => {
         }
     }, [props.remoteStream]);
     return (
-        <div styles={styles.videoContainer}>
-            <video styles={styles.videoElement} ref={remoteVideoRef} autoPlay />
+        <div style={styles.videoContainer}>
+            <video style={styles.videoElement} ref={remoteVideoRef} autoPlay />
         </div>
     )
 };
