@@ -1,9 +1,10 @@
-import { MdCallEnd, MdMic, MdMicOff, MdVideocam, MdVideocamOff, MdVideoLabel, MdVideoCall } from 'react-icons/md';
+import { MdCallEnd, MdMic, MdMicOff, MdVideocam, MdVideocamOff, MdScreenShare, MdStopScreenShare } from 'react-icons/md';
 import VideoButton from './VideoButton';  
 
 // Redux related hooks
 import { useDispatch, useSelector } from 'react-redux';
 import { localStreamActions } from '../../../store/local-stream-slice';
+import { switchToScreenSharing } from '../../../utils/webRtc/webRtcHandler';
 
 const styles = {
     buttonContainer: {
@@ -23,6 +24,7 @@ const VideoButtons = () => {
   const dispatch = useDispatch();
   const microphoneState = useSelector(state => state.callLocalStream.localMicrophoneEnabled);
   const cameraState = useSelector(state => state.callLocalStream.localCameraEnabled);
+  const screenShareState = useSelector(state => state.callLocalStream.localScreenShareEnabled);
   const localStream = useSelector(state => state.callLocalStream.localStream);
 
   const microphoneClickHandler = () => {
@@ -33,6 +35,10 @@ const VideoButtons = () => {
   const cameraClickHandler = () => {
     localStream.getVideoTracks()[0].enabled = !cameraState;
     dispatch(localStreamActions.setLocalCameraEnabled(!cameraState));    
+  };
+
+  const screenShareClickHandler = () => {
+    switchToScreenSharing();
   };
 
   return (
@@ -46,8 +52,8 @@ const VideoButtons = () => {
         <VideoButton onClickHandler={cameraClickHandler}>
           {cameraState ? <MdVideocam style={styles.icon} /> : <MdVideocamOff style={styles.icon}/>}
         </VideoButton>
-        <VideoButton>
-          <MdVideoLabel style={styles.icon}/>
+        <VideoButton onClickHandler={screenShareClickHandler}>
+          {screenShareState ? <MdStopScreenShare style={styles.icon}/> : <MdScreenShare style={styles.icon} />}
         </VideoButton>
     </div>
   )

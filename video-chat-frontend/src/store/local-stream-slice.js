@@ -21,7 +21,8 @@ const localStreamSlice = createSlice({
         },
         remoteStream : null,
         localCameraEnabled: true,
-        localMicrophoneEnabled: true
+        localMicrophoneEnabled: true,
+        localScreenShareEnabled: false
     },
     reducers: {
         setLocalStream(state, action) {
@@ -48,6 +49,9 @@ const localStreamSlice = createSlice({
         },
         setLocalMicrophoneEnabled(state, action) {
             state.localMicrophoneEnabled = action.payload;
+        },
+        setLocalScreenShareEnabled(state, action) {
+            state.localScreenShareEnabled = action.payload;
         }
     }    
 });

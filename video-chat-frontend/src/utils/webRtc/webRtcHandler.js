@@ -213,3 +213,33 @@ export const handleIncomingIceCandidate = async (data) => {
         console.error('Error occured during reception of ICE candidate from remote peer', error);
     }
 };
+
+// Screen Sharing Stream Implementation
+let screenShareStream;
+
+export const switchToScreenSharing = async () => {
+    if (!store.getState().callLocalStream.localScreenShareEnabled) {
+        try {
+            screenShareStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            store.dispatch(localStreamActions.setLocalScreenShareEnabled(true));
+    
+            // get all senders sending a video track
+            const senders = peerConnection.getSenders(); 
+            const sender = senders.find(sender => sender.track.kind === screenShareStream.getVideoTracks()[0].kind);
+            sender.replaceTrack(screenShareStream.getVideoTracks()[0]);
+
+        } catch (error) {
+            console.log("Error occured while trying to set screen sharing!", error);
+        }
+    }
+    else {
+        const localStream = store.getState().callLocalStream.localStream;
+
+        const senders = peerConnection.getSenders(); 
+        const sender = senders.find(sender => sender.track.kind === localStream.getVideoTracks()[0].kind);
+        sender.replaceTrack(localStream.getVideoTracks()[0]);
+        store.dispatch(localStreamActions.setLocalScreenShareEnabled(false));
+
+        screenShareStream.getTracks().forEach(track => track.stop());
+    }
+};
