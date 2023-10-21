@@ -65,7 +65,6 @@ io.on('connection', (socket) => {
 
     // Server receives pre-offer answer from Callee and then has to send that to the Caller
     socket.on('pre-offer-answer', (data) => {
-
         // Server gets { 'callerSocketId', 'answer' } as part of data from Callee
         io.to(data.callerSocketId).emit('pre-offer-answer', {
             answer: data.answer

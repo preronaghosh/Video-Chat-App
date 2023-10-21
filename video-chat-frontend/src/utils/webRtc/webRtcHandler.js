@@ -174,7 +174,6 @@ const sendOffer = async () => {
     // console.log(offer); // debug
     await peerConnection.setLocalDescription(offer);
 
-    console.log(`CalleeSocketId at frontend is: ${connectedUserSocketId}`);
     sendWebRtcOffer({
         calleeSocketId: connectedUserSocketId,
         offer: offer
@@ -261,7 +260,6 @@ const resetCallDataAfterHangUp = () => {
     // If screen sharing was active while call was hung up, then disable all tracks
     if (store.getState().callLocalStream.localScreenShareEnabled) {
         screenShareStream.getTracks().forEach(track => track.stop());
-        store.dispatch(localStreamActions.setLocalScreenShareEnabled(false));
     }
 };
 
