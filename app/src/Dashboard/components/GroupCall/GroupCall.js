@@ -1,6 +1,7 @@
 import GroupCallButton from "../GroupCallButton/GroupCallButton";
 import { useSelector } from 'react-redux';
 import { callStates } from "../../../store/local-stream-slice";
+import { createNewGroupCall } from "../../../utils/webRtc/webRtcGroupCallHandler";
 
 const GroupCall = () => {
     const currentCallState = useSelector(state => state.callLocalStream.callState);
@@ -8,6 +9,7 @@ const GroupCall = () => {
 
     const createRoomHandler = () => {
         // create room and send that data to all other active users
+        createNewGroupCall();
     };
 
     return (

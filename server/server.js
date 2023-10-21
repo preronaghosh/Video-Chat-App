@@ -2,11 +2,14 @@ const express = require("express");
 const socket = require("socket.io"); // for direct calls 
 const { ExpressPeerServer } = require("peer"); // for sending group call offers and answers
 const groupCallServer = require('./group-call-server');
+const { v4: uuidv4 } = require('uuid');
 
 const PORT = 5000;
 const app = express();
 
-let peers = [];
+let peers = []; // maintain a list of active peers
+let groupCallRooms = []; // maintain a list of active rooms
+
 const broadcastEventTypes = {
     ACTIVE_USERS: 'ACTIVE_USERS',
     GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS'
@@ -20,6 +23,8 @@ const server = app.listen(PORT, () => {
 const peerServer = ExpressPeerServer(server, {
     debug: true
 });
+
+app.use('/peerjs', peerServer);
 
 // Create event listener for a new group call
 groupCallServer.createPeerServerListeners(peerServer);
@@ -111,5 +116,24 @@ io.on('connection', (socket) => {
     socket.on('hang-up', (data) => {
         console.log("User hung up");
         io.to(data.userSocketId).emit('hang-up');
+    });
+
+    // Event listeners related to group calls
+    socket.on('group-call-register', (data) => {
+        // Create a unique room id
+        const roomId = uuidv4();
+        socket.join(roomId);
+
+        // Update server maintained list of active rooms
+        const newGroupCallRoomData = {
+            peerId: data.peerId,
+            hostname : data.username,
+            socketId: socket.id,
+            roomId : roomId
+        };
+        groupCallRooms.push(newGroupCallRoomData);
+
+        console.log("Handled new group call registration");
+        console.log(groupCallRooms);
     });
 });

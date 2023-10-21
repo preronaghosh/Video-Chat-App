@@ -94,3 +94,10 @@ export const sendIceCandidateToRemotePeer = (data) => {
 export const sendUserHangUpSignal = (data) => {
     socket.emit('hang-up', data);
 };
+
+// Emitting events related to Group Calls
+
+export const registerGroupCall = (data) => {
+    // format of data: {username, peerId}
+    socket.emit('group-call-register', data);
+};
