@@ -1,7 +1,7 @@
 import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
-import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer, handleIncomingIceCandidate } from '../webRtc/webRtcHandler';
+import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer, handleIncomingIceCandidate, handleUserHangUpRequest } from '../webRtc/webRtcHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -51,6 +51,12 @@ export const connectWithWebSocket = () => {
     socket.on('webRtc-candidate', (data) => {
         handleIncomingIceCandidate(data);
     });
+
+    // We have received a hang up request 
+    // no data is sent from server
+    socket.on('hang-up', () => {
+        handleUserHangUpRequest();
+    });
 };
 
 export const registerNewUser = (username) => {
@@ -82,4 +88,9 @@ export const sendWebRtcAnswer = (data) => {
 // Send caller's ICE candidate to Callee
 export const sendIceCandidateToRemotePeer = (data) => {
     socket.emit('webRtc-candidate', data);
+};
+
+// Send hang up request to connected user
+export const sendUserHangUpSignal = (data) => {
+    socket.emit('hang-up', data);
 };

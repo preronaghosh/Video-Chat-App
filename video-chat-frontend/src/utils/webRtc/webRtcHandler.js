@@ -1,6 +1,6 @@
 import store from "../../store/index";
 import { localStreamActions, callStates } from "../../store/local-stream-slice";
-import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer, sendIceCandidateToRemotePeer } from "../wssConnection/wssConnection";
+import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer, sendIceCandidateToRemotePeer, sendUserHangUpSignal } from "../wssConnection/wssConnection";
 
 let connectedUserSocketId; // Stores currently connected user on a direct call
 let peerConnection; 
@@ -243,3 +243,29 @@ export const switchToScreenSharing = async () => {
         screenShareStream.getTracks().forEach(track => track.stop());
     }
 };
+
+export const hangUpCall = () => {
+    sendUserHangUpSignal({
+        userSocketId: connectedUserSocketId
+    });
+    resetCallDataAfterHangUp();
+};
+
+const resetCallDataAfterHangUp = () => {
+    store.dispatch(localStreamActions.setRemoteStream(null));
+    peerConnection.close();
+    peerConnection = null;
+    createPeerConnection();
+    resetCallData();
+
+    // If screen sharing was active while call was hung up, then disable all tracks
+    if (store.getState().callLocalStream.localScreenShareEnabled) {
+        screenShareStream.getTracks().forEach(track => track.stop());
+        store.dispatch(localStreamActions.setLocalScreenShareEnabled(false));
+    }
+};
+
+// if the connected user has hung up
+export const handleUserHangUpRequest = () => {
+    resetCallDataAfterHangUp();
+}

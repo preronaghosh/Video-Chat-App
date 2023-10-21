@@ -24,11 +24,11 @@ const DirectCall = () => {
     return (
         <Fragment>
             <LocalVideoView localStream={localStream}/>
-            {remoteCallStream && <RemoteVideoView remoteStream={remoteCallStream}/>}
+            {remoteCallStream && (currentCallState === callStates.InProgress) && <RemoteVideoView remoteStream={remoteCallStream}/>}
             {callRejectionDetails.rejected && <CallRejectedDialog />}
             {currentCallState === callStates.Requested && <IncomingCallDialog callerUsername={callerUsername}/>}
             {callingDialogVisibility && <CallingDialog />}
-            <VideoButtons />
+            {remoteCallStream && (currentCallState === callStates.InProgress) && <VideoButtons />}
         </Fragment>
     );
 };

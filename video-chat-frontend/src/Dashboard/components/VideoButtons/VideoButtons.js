@@ -5,6 +5,7 @@ import VideoButton from './VideoButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { localStreamActions } from '../../../store/local-stream-slice';
 import { switchToScreenSharing } from '../../../utils/webRtc/webRtcHandler';
+import { hangUpCall } from '../../../utils/webRtc/webRtcHandler';
 
 const styles = {
     buttonContainer: {
@@ -41,12 +42,16 @@ const VideoButtons = () => {
     switchToScreenSharing();
   };
 
+  const hangUpCallHandler = () => {
+    hangUpCall();
+  }
+
   return (
     <div style={styles.buttonContainer}>
         <VideoButton onClickHandler={microphoneClickHandler}>
           {microphoneState ? <MdMic style={styles.icon} /> : <MdMicOff style={styles.icon}/>}
         </VideoButton>
-        <VideoButton>
+        <VideoButton onClickHandler={hangUpCallHandler}>
           <MdCallEnd style={styles.icon}/>
         </VideoButton>
         <VideoButton onClickHandler={cameraClickHandler}>
