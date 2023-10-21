@@ -1,5 +1,7 @@
 const express = require("express");
-const socket = require("socket.io");
+const socket = require("socket.io"); // for direct calls 
+const { ExpressPeerServer } = require("peer"); // for sending group call offers and answers
+const groupCallServer = require('./group-call-server');
 
 const PORT = 5000;
 const app = express();
@@ -10,9 +12,17 @@ const broadcastEventTypes = {
     GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS'
 };
 
+
 const server = app.listen(PORT, () => {
     console.log("Server is listening on port 5000");
 });
+
+const peerServer = ExpressPeerServer(server, {
+    debug: true
+});
+
+// Create event listener for a new group call
+groupCallServer.createPeerServerListeners(peerServer);
 
 const io = socket(server, {
     cors: {

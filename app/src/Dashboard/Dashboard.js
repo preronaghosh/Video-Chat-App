@@ -5,10 +5,12 @@ import { getLocalStream } from '../utils/webRtc/webRtcHandler';
 import { useEffect } from 'react';
 import DirectCall from './components/DirectCall/DirectCall';
 import DashboardInfo from './components/DashboardInfo/DashboardInfo';
+import { connectWithMyPeer } from '../utils/webRtc/webRtcGroupCallHandler';
 
 const Dashboard = () => {
   useEffect(() => {
     getLocalStream();
+    connectWithMyPeer();
   }, []);
 
   return (
