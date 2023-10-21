@@ -6,8 +6,12 @@ import { useEffect } from 'react';
 import DirectCall from './components/DirectCall/DirectCall';
 import DashboardInfo from './components/DashboardInfo/DashboardInfo';
 import { connectWithMyPeer } from '../utils/webRtc/webRtcGroupCallHandler';
+import GroupCallRoomsList from './components/GroupCallRoomsList/GroupCallRoomsList';
+import { useSelector } from 'react-redux';
+import { callStates } from '../store/local-stream-slice';
 
 const Dashboard = () => {
+  const currentCallState = useSelector(state => state.callLocalStream.callState); 
   useEffect(() => {
     getLocalStream();
     connectWithMyPeer();
@@ -18,10 +22,10 @@ const Dashboard = () => {
       <div className='dashboard_left_section'>
         <div className='dashboard_content_container'>
           <DirectCall />
-          <DashboardInfo />
+          {currentCallState !== callStates.InProgress && <DashboardInfo />}
         </div>
         <div className='dashboard_rooms_container background_secondary_color'>
-          Rooms
+          <GroupCallRoomsList />
         </div>
       </div>
       <div className='dashboard_right_section background_secondary_color'>
