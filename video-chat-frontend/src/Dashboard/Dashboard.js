@@ -4,6 +4,7 @@ import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 import { getLocalStream } from '../utils/webRtc/webRtcHandler';
 import { useEffect } from 'react';
 import DirectCall from './components/DirectCall/DirectCall';
+import DashboardInfo from './components/DashboardInfo/DashboardInfo';
 
 const Dashboard = () => {
   useEffect(() => {
@@ -15,6 +16,7 @@ const Dashboard = () => {
       <div className='dashboard_left_section'>
         <div className='dashboard_content_container'>
           <DirectCall />
+          <DashboardInfo />
         </div>
         <div className='dashboard_rooms_container background_secondary_color'>
           Rooms
