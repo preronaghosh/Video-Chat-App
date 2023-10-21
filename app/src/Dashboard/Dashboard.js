@@ -1,4 +1,3 @@
-import './Dashboard.css';
 import logo from '../assets/logo.png';
 import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
 import { getLocalStream } from '../utils/webRtc/webRtcHandler';
@@ -9,6 +8,9 @@ import { connectWithMyPeer } from '../utils/webRtc/webRtcGroupCallHandler';
 import GroupCallRoomsList from './components/GroupCallRoomsList/GroupCallRoomsList';
 import { useSelector } from 'react-redux';
 import { callStates } from '../store/local-stream-slice';
+import GroupCall from './components/GroupCall/GroupCall';
+
+import './Dashboard.css';
 
 const Dashboard = () => {
   const currentCallState = useSelector(state => state.callLocalStream.callState); 
@@ -22,6 +24,7 @@ const Dashboard = () => {
       <div className='dashboard_left_section'>
         <div className='dashboard_content_container'>
           <DirectCall />
+          <GroupCall />
           {currentCallState !== callStates.InProgress && <DashboardInfo />}
         </div>
         <div className='dashboard_rooms_container background_secondary_color'>
