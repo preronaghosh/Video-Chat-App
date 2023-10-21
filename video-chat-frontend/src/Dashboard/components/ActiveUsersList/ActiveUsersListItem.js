@@ -1,10 +1,17 @@
 import userAvatar from '../../../assets/userAvatar.png';
+import { callStates } from '../../../store/local-stream-slice';
 import { callAnotherUser } from '../../../utils/webRtc/webRtcHandler';
+import { useSelector } from 'react-redux';
+
 
 const ActiveUsersListItem = (props) => {
+    const callState = useSelector(state => state.callLocalStream.callState);
+
     const handleUserClick = () => {
         // call this user
-        callAnotherUser(props.activeUser); 
+        if (callStates.Available === callState) {
+            callAnotherUser(props.activeUser); 
+        }
     };
 
     return (
