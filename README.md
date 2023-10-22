@@ -19,6 +19,8 @@ WebRTC Implementation covers the following stages:
 
 **Server:** Node, Express, PeerJS, SocketIO
 
+**Testing:** React Testing Library, Jest, Redux-Mock-Store
+
 
 ## Run Locally
 
@@ -43,3 +45,12 @@ Change to client directory, install dependencies and start the client on http://
   npm install
   npm start
 ```
+## Running Tests
+
+To run client-side tests, run the following command:
+
+```bash
+  cd app/
+  npm test
+```
+
