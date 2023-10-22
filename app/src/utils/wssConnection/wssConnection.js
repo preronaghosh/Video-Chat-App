@@ -15,6 +15,11 @@ const broadcastEventsHandler = (data) => {
         // Add/Remove new peer for rendering a list other than the current user
         const newActiveUsers = data.activePeers.filter(peer => peer.socketId !== socket.id);
         store.dispatch(dashboardActions.setActiveUsers(newActiveUsers));
+    } 
+
+    if (data.event === broadcastEventTypes.GROUP_CALL_ROOMS) {
+        console.log("Data.activeRooms: ", data.activeGroupCallRooms);
+        store.dispatch(dashboardActions.setActiveRooms(data.activeGroupCallRooms));
     }
 } 
 
@@ -26,6 +31,7 @@ export const connectWithWebSocket = () => {
     });
 
     socket.on('broadcast', (data) => {
+        console.log("Received a broadcast event after creating a room on wssConnection.js");
         broadcastEventsHandler(data);
     });
 

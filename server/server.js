@@ -53,6 +53,12 @@ io.on('connection', (socket) => {
             event: broadcastEventTypes.ACTIVE_USERS,
             activePeers: peers
         });
+
+        // Let all users know the active rooms
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            activeGroupCallRooms: groupCallRooms
+        });
     });
 
     socket.on('disconnect', () => {
@@ -132,8 +138,12 @@ io.on('connection', (socket) => {
             roomId : roomId
         };
         groupCallRooms.push(newGroupCallRoomData);
+        console.log("grouCallRooms: ", groupCallRooms);
 
-        console.log("Handled new group call registration");
-        console.log(groupCallRooms);
+        // send all active users the active rooms
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            activeGroupCallRooms: groupCallRooms
+        });
     });
 });

@@ -5,7 +5,7 @@ const GroupCallRoomsListItem = (props) => {
 
     return (
         <div className='group_calls_list_item' onClick={joinRoomHandler}>
-            <span>{props.room.hostName}'s Room</span>
+            <span>{props.room.hostname}'s Room</span>
         </div>
     );
 }

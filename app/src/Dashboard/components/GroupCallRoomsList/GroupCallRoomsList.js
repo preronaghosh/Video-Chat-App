@@ -1,23 +1,15 @@
 import './GroupCallRoomsList.css';
+import { useSelector } from 'react-redux';
 
-import GroupCallRoomsListItem from './GroupCallRoomsListItem';
-
-const dummyList = [
-    {
-        roomId: '1234', 
-        hostName: 'Mark'
-    },
-    {
-        roomId: '5678',
-        hostName: 'Paul'
-    }
-];
- 
+import GroupCallRoomsListItem from './GroupCallRoomsListItem'; 
 
 const GroupCallRoomsList = () => {
+  const activeRooms = useSelector(state => state.myDashboard.activeRooms);
+  console.log("Activerooms: ", activeRooms);
+
   return (
     <>
-        {dummyList.map(room => <GroupCallRoomsListItem key={room.roomId} room={room}/>)}
+      {activeRooms.map(room => <GroupCallRoomsListItem key={room.roomId} room={room}/>)}
     </>
   );
 }
