@@ -138,7 +138,6 @@ io.on('connection', (socket) => {
             roomId : roomId
         };
         groupCallRooms.push(newGroupCallRoomData);
-        console.log("grouCallRooms: ", groupCallRooms);
 
         // send all active users the active rooms
         io.sockets.emit('broadcast', {
