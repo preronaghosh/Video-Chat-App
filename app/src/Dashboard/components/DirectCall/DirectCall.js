@@ -9,6 +9,7 @@ import CallingDialog from '../CallingDialog/CallingDialog';
 import CallRejectedDialog from "../CallRejectedDialog/CallRejectedDialog";
 import { callStates } from "../../../store/local-stream-slice";
 import VideoButtons from "../VideoButtons/VideoButtons";
+import Messenger from "../Messenger/Messenger";
 
 
 const DirectCall = () => {
@@ -29,6 +30,9 @@ const DirectCall = () => {
             {currentCallState === callStates.Requested && <IncomingCallDialog callerUsername={callerUsername}/>}
             {callingDialogVisibility && <CallingDialog />}
             {remoteCallStream && (currentCallState === callStates.InProgress) && <VideoButtons />}
+
+            {/* we want a chat messenger only for direct calls */}
+            {currentCallState === callStates.InProgress && remoteCallStream && <Messenger />}
         </Fragment>
     );
 };

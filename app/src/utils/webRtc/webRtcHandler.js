@@ -4,6 +4,7 @@ import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer, se
 
 let connectedUserSocketId; // Stores currently connected user on a direct call
 let peerConnection; 
+let dataChannel;
 
 const defaultConstraints = {   // Stores the default mediaStream object config, manually set the video stream to low resolution
     video: {
@@ -149,9 +150,31 @@ const createPeerConnection = () => {
     // When we receive a stream with tracks from a remote peer
     peerConnection.ontrack = (event) => {
         const remoteStream = event.streams[0]; 
-        const remoteTrack = event.track; 
         // add stream to redux store  
         store.dispatch(localStreamActions.setRemoteStream(remoteStream));
+    };
+
+    // Incoming messages on a data channel (receiver side)
+    peerConnection.ondatachannel = (event) => {
+        const dataChannel = event.channel;
+
+        dataChannel.onopen = () => {
+            console.log("Peer connection ready to receive data");
+        };
+
+        dataChannel.onmessage = (event) => {
+            store.dispatch(localStreamActions.setChatMessage({
+                received: true, 
+                content: event.data
+            }));
+        };
+    };
+
+    // Data channel for sending a message (sender side)
+    dataChannel = peerConnection.createDataChannel('chat-messenger');
+    
+    dataChannel.onopen = () => {
+        console.log("Data channel successfully opened");
     };
 
     peerConnection.onicecandidate = (event) => {
@@ -270,3 +293,9 @@ const resetCallDataAfterHangUp = () => {
 export const handleUserHangUpRequest = () => {
     resetCallDataAfterHangUp();
 }
+
+// Chat messenger related functions
+// User wants to send data on a data channel to another user 
+export const sendMessageUsingDataChannel = (message) => {
+    dataChannel.send(message);
+};

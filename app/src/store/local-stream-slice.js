@@ -24,7 +24,11 @@ const localStreamSlice = createSlice({
         localMicrophoneEnabled: true,
         localScreenShareEnabled: false,
         groupCallActive: false,
-        groupCallStreams: []
+        groupCallStreams: [],
+        chatMessage: {
+            received: false,
+            content: ''
+        }
     },
     reducers: {
         setLocalStream(state, action) {
@@ -60,6 +64,10 @@ const localStreamSlice = createSlice({
         },
         setGroupCallStreams(state, action) {
             state.groupCallStreams = action.payload;
+        },
+        setChatMessage(state, action) {
+            state.chatMessage.received = action.payload.received;
+            state.chatMessage.content = action.payload.content;
         }
     }    
 });
