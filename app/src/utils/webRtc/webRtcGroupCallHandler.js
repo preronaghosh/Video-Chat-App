@@ -100,6 +100,12 @@ export const clearGroupCallData = () => {
     // Destroy current group call and create a new peer connection for next call
     myPeer.destroy();
     connectWithMyPeer();
+
+    const localStream = store.getState().callLocalStream.localStream;
+    localStream.getVideoTracks()[0].enabled = true;
+    localStream.getAudioTracks()[0].enabled = true;
+    store.dispatch(localStreamActions.setLocalCameraEnabled(true));
+    store.dispatch(localStreamActions.setLocalMicrophoneEnabled(true));
 };
 
 // When users in a group call get to know that a user has left, they remove the inactive stream 

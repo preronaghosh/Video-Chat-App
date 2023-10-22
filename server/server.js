@@ -61,6 +61,7 @@ io.on('connection', (socket) => {
         });
     });
 
+    // event listener for when user disconnects by closing the webapp
     socket.on('disconnect', () => {
         console.log(`User with id: ${socket.id} disconnected`);
         // Remove the disconnected user from active peers list and update redux store state
@@ -70,6 +71,15 @@ io.on('connection', (socket) => {
         io.sockets.emit('broadcast', {
             event: broadcastEventTypes.ACTIVE_USERS,
             activePeers: peers
+        });
+
+        // if user disconnects during group call, we will remove the other active users from the call too
+        // if the current user was the owner of the group call, array will have a value 
+        groupCallRooms = groupCallRooms.filter(room => room.socketId !== socket.id);
+        
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            activeGroupCallRooms: groupCallRooms
         });
     });
 
