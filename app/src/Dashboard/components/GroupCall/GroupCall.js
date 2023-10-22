@@ -27,8 +27,8 @@ const GroupCall = () => {
             {groupCallState && <GroupCallRoom groupCallStreams={groupCallStreams}/>}
             {groupCallState && <GroupCallButton label={'Leave Room'} onClickHandler={leaveRoomHandler}/>}
 
-            {/* only render video buttons when it is a direct call, not a group call */}
-            {currentCallState === callStates.InProgress && !groupCallState && <VideoButtons />}
+            {/* render some video buttons only when it is a direct call, not a group call */}
+            {groupCallState && <VideoButtons />}
         </>
     );
 }

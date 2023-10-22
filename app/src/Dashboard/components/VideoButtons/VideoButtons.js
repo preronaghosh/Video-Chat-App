@@ -28,6 +28,8 @@ const VideoButtons = () => {
   const screenShareState = useSelector(state => state.callLocalStream.localScreenShareEnabled);
   const localStream = useSelector(state => state.callLocalStream.localStream);
 
+  const groupCallState = useSelector(state => state.callLocalStream.groupCallActive);
+
   const microphoneClickHandler = () => {
     localStream.getAudioTracks()[0].enabled = !microphoneState;
     dispatch(localStreamActions.setLocalMicrophoneEnabled(!microphoneState));
@@ -51,15 +53,20 @@ const VideoButtons = () => {
         <VideoButton onClickHandler={microphoneClickHandler}>
           {microphoneState ? <MdMic style={styles.icon} /> : <MdMicOff style={styles.icon}/>}
         </VideoButton>
-        <VideoButton onClickHandler={hangUpCallHandler}>
+
+        {/* Don't render call end button when in a group call as you can only leave a room */}
+        {!groupCallState && <VideoButton onClickHandler={hangUpCallHandler}>
           <MdCallEnd style={styles.icon}/>
-        </VideoButton>
+        </VideoButton>}
+        
         <VideoButton onClickHandler={cameraClickHandler}>
           {cameraState ? <MdVideocam style={styles.icon} /> : <MdVideocamOff style={styles.icon}/>}
         </VideoButton>
-        <VideoButton onClickHandler={screenShareClickHandler}>
+        
+        {/* dont render screen share option when on a group call */}
+        {!groupCallState && <VideoButton onClickHandler={screenShareClickHandler}>
           {screenShareState ? <MdStopScreenShare style={styles.icon}/> : <MdScreenShare style={styles.icon} />}
-        </VideoButton>
+        </VideoButton>} 
     </div>
   )
 }
