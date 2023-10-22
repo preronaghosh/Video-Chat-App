@@ -1,11 +1,12 @@
 import store from '../../store/index';
 import { callStates, localStreamActions } from '../../store/local-stream-slice';
-import { registerGroupCall, joinAnotherGroupCall, userLeftGroupCall } from '../wssConnection/wssConnection';
+import { registerGroupCall, joinAnotherGroupCall, userLeftGroupCall, groupCallClosedByHost } from '../wssConnection/wssConnection';
 
 // Variables to store peers in a group call related data 
 let myPeer;
 let myPeerId;
 let activeGroupCallId;
+let isGroupCallOwner = false; // flag is true when current host is the room creator
 
 export const connectWithMyPeer = () => {
     myPeer = new window.Peer(undefined, {
@@ -34,6 +35,8 @@ export const connectWithMyPeer = () => {
 };
 
 export const createNewGroupCall = () => {
+    isGroupCallOwner = true;
+
     registerGroupCall({
         username: store.getState().myDashboard.username,
         peerId: myPeerId
@@ -72,12 +75,24 @@ export const connectToANewUser = (data) => {
 };
 
 export const exitGroupCall = () => {
-    userLeftGroupCall({
-        streamId: store.getState().callLocalStream.localStream.id,
-        roomId: activeGroupCallId
-    });
+    // Check first if the group call is being closed by the host/another participant
 
+    if (isGroupCallOwner) {                 // if host closes the group
+        groupCallClosedByHost({
+            peerId: myPeerId
+        });    
+    } else {                                // if participant is leaving a group call
+        userLeftGroupCall({
+            streamId: store.getState().callLocalStream.localStream.id,
+            roomId: activeGroupCallId
+        });
+    }
+    clearGroupCallData();
+};
+
+export const clearGroupCallData = () => {
     activeGroupCallId = null;
+    isGroupCallOwner = null;
     store.dispatch(localStreamActions.setGroupCallActive(false));
     store.dispatch(localStreamActions.setCallState(callStates.Available));
     store.dispatch(localStreamActions.setGroupCallStreams([]));
@@ -107,4 +122,15 @@ const check_addVideoStream = (incomingStream) => {
         ];
         store.dispatch(localStreamActions.setGroupCallStreams(updatedGroupCallStreams));
     }
+};
+
+// return room id if room has not been closed by host
+// else return false
+export const checkIfRoomIsActive = () => {
+    
+    if (store.getState().callLocalStream.groupCallActive) {
+        return activeGroupCallId;
+    }
+
+    return false;
 };

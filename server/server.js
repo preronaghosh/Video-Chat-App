@@ -165,4 +165,15 @@ io.on('connection', (socket) => {
             streamId: data.streamId
         });
     });
+
+    socket.on('group-call-closed-by-host', (data) => {             // data format: { peerId }
+        // update active rooms list by removing the peerId's created room
+        groupCallRooms = groupCallRooms.filter(room => room.peerId !== data.peerId); 
+
+        // let all other users know about this 
+        io.sockets.emit('broadcast', {
+            event: broadcastEventTypes.GROUP_CALL_ROOMS,
+            activeGroupCallRooms: groupCallRooms
+        });
+    });
 });

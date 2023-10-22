@@ -2,7 +2,7 @@ import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
 import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer, handleIncomingIceCandidate, handleUserHangUpRequest } from '../webRtc/webRtcHandler';
-import { connectToANewUser, removeInactiveStream } from '../webRtc/webRtcGroupCallHandler';
+import { connectToANewUser, removeInactiveStream, checkIfRoomIsActive, clearGroupCallData } from '../webRtc/webRtcGroupCallHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -10,6 +10,7 @@ const broadcastEventTypes = {
     ACTIVE_USERS: 'ACTIVE_USERS',
     GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS'
 };
+
 
 const broadcastEventsHandler = (data) => {
     if(data.event === broadcastEventTypes.ACTIVE_USERS) {
@@ -19,7 +20,26 @@ const broadcastEventsHandler = (data) => {
     } 
 
     if (data.event === broadcastEventTypes.GROUP_CALL_ROOMS) {
-        store.dispatch(dashboardActions.setActiveRooms(data.activeGroupCallRooms));
+        // handles new group call, joining an existing group call or the host closing a group call room events
+        // for room that was already closed by host, the room id will not be available in data.activeGroupCallRooms
+
+        const groupCallRooms = data.activeGroupCallRooms.filter(room => room.socketId !== socket.id); // get rooms not created by current user
+        const activeRoomId = checkIfRoomIsActive();
+
+        if (activeRoomId) { // I am in an active group call right now
+
+            // check if the active room is the one that was closed by host while emitting this event
+            const room = groupCallRooms.find(room => room.roomId === activeRoomId); 
+
+            // if my room is still active, then that was not closed by host
+            // if room was not found, then host closed it - reset all data
+            if (!room) {
+                clearGroupCallData();
+            }
+        }
+        // else, I am not in an active group call right now
+
+        store.dispatch(dashboardActions.setActiveRooms(groupCallRooms));   // now we cannot see our created room in the bottom list
     }
 } 
 
@@ -125,4 +145,9 @@ export const joinAnotherGroupCall = (data) => {
 export const userLeftGroupCall = (data) => {
     // data format: { streamId, roomId }
     socket.emit('group-call-user-left', data);
+};
+
+export const groupCallClosedByHost = (data) => {
+    // data : { peerId }
+    socket.emit('group-call-closed-by-host', data);
 };
