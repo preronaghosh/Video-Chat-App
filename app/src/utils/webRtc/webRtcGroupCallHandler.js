@@ -25,6 +25,7 @@ export const connectWithMyPeer = () => {
         //send our stream to the new user
         call.answer(store.getState().callLocalStream.localStream);
 
+        // event listener to receive a remote stream for group call
         call.on('stream', (incomingStream) => {
             check_addVideoStream(incomingStream);
         });
@@ -60,8 +61,9 @@ export const joinGroupCall = (hostSocketId, roomId) => {
 export const connectToANewUser = (data) => {
     // format here: { joineePeerId, hostSocketId, localStreamId }
     const localStream = store.getState().callLocalStream.localStream;
-    const call = myPeer.call(data.joineePeerId, localStream);
+    const call = myPeer.call(data.joineePeerId, localStream); // call another peer and send localStream
 
+    // when the other peer answers, current user will receive a stream
     call.on('stream', (incomingStream) => {
         check_addVideoStream(incomingStream);
     });
