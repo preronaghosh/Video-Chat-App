@@ -1,10 +1,11 @@
 import store from '../../store/index';
 import { callStates, localStreamActions } from '../../store/local-stream-slice';
-import { registerGroupCall, joinAnotherGroupCall } from '../wssConnection/wssConnection';
+import { registerGroupCall, joinAnotherGroupCall, userLeftGroupCall } from '../wssConnection/wssConnection';
 
 // Variables to store peers in a group call related data 
 let myPeer;
 let myPeerId;
+let activeGroupCallId;
 
 export const connectWithMyPeer = () => {
     myPeer = new window.Peer(undefined, {
@@ -45,6 +46,7 @@ export const createNewGroupCall = () => {
 // Current user wants to join a group call
 export const joinGroupCall = (hostSocketId, roomId) => {
     const localStream = store.getState().callLocalStream.localStream;
+    activeGroupCallId = roomId;
 
     joinAnotherGroupCall({
         peerId: myPeerId,
@@ -69,6 +71,30 @@ export const connectToANewUser = (data) => {
     });
 };
 
+export const exitGroupCall = () => {
+    userLeftGroupCall({
+        streamId: store.getState().callLocalStream.localStream.id,
+        roomId: activeGroupCallId
+    });
+
+    activeGroupCallId = null;
+    store.dispatch(localStreamActions.setGroupCallActive(false));
+    store.dispatch(localStreamActions.setCallState(callStates.Available));
+    store.dispatch(localStreamActions.setGroupCallStreams([]));
+
+    // Destroy current group call and create a new peer connection for next call
+    myPeer.destroy();
+    connectWithMyPeer();
+};
+
+// When users in a group call get to know that a user has left, they remove the inactive stream 
+export const removeInactiveStream = (data) => {
+    // get only the active streams list
+    const updatedGroupCallStreams = store.getState().callLocalStream.groupCallStreams.filter(stream => stream.id !== data.streamId);
+    store.dispatch(localStreamActions.setGroupCallStreams(updatedGroupCallStreams));
+};
+
+// helper function for checking incoming stream and adding to global variable
 const check_addVideoStream = (incomingStream) => {
     const currentStoredStreams = store.getState().callLocalStream.groupCallStreams;
     // check if incoming stream is already stored or not

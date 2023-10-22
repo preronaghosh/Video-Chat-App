@@ -1,7 +1,7 @@
 import GroupCallButton from "../GroupCallButton/GroupCallButton";
 import { useSelector } from 'react-redux';
 import { callStates } from "../../../store/local-stream-slice";
-import { createNewGroupCall } from "../../../utils/webRtc/webRtcGroupCallHandler";
+import { createNewGroupCall, exitGroupCall } from "../../../utils/webRtc/webRtcGroupCallHandler";
 import GroupCallRoom from "../GroupCallRoom/GroupCallRoom";
 import VideoButtons from '../VideoButtons/VideoButtons';
 
@@ -16,11 +16,16 @@ const GroupCall = () => {
         createNewGroupCall();
     };
 
+    const leaveRoomHandler = () => {
+        exitGroupCall();
+    };
+
     return (
         <>
             {/* Don't render create room button if a call is in progress or local stream is available */}
             {!groupCallState && localStreamState && currentCallState !== callStates.InProgress && <GroupCallButton label={'Create Room'} onClickHandler={createRoomHandler}/>} 
             {groupCallState && <GroupCallRoom groupCallStreams={groupCallStreams}/>}
+            {groupCallState && <GroupCallButton label={'Leave Room'} onClickHandler={leaveRoomHandler}/>}
             {groupCallState && <VideoButtons />}
         </>
     );

@@ -156,5 +156,13 @@ io.on('connection', (socket) => {
         });
 
         socket.join(data.roomId);
-    })
+    });
+
+    socket.on('group-call-user-left', (data) => {
+        socket.leave(data.roomId);
+        // format of data: { streamId, roomId }
+        io.to(data.roomId).emit('group-call-user-left', {
+            streamId: data.streamId
+        });
+    });
 });

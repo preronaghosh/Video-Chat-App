@@ -2,7 +2,7 @@ import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
 import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer, handleIncomingIceCandidate, handleUserHangUpRequest } from '../webRtc/webRtcHandler';
-import { connectToANewUser } from '../webRtc/webRtcGroupCallHandler';
+import { connectToANewUser, removeInactiveStream } from '../webRtc/webRtcGroupCallHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -68,6 +68,10 @@ export const connectWithWebSocket = () => {
         // data format: { joineePeerId, hostSocketId, localStreamId }
         connectToANewUser(data);
     });
+
+    socket.on('group-call-user-left', (data) => {
+        removeInactiveStream(data);
+    });
 };
 
 export const registerNewUser = (username) => {
@@ -116,4 +120,9 @@ export const registerGroupCall = (data) => {
 export const joinAnotherGroupCall = (data) => {
     //format of data: { myPeerId, hostSocketId, roomId, localStreamId }
     socket.emit('join-group-call-request', data);
-}
+};
+
+export const userLeftGroupCall = (data) => {
+    // data format: { streamId, roomId }
+    socket.emit('group-call-user-left', data);
+};
