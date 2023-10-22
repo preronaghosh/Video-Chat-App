@@ -2,6 +2,7 @@ import socketClient from 'socket.io-client';
 import store from '../../store/index';
 import { dashboardActions } from '../../store/dashboard-slice';
 import { handleIncomingPreOffer, handleIncomingPreOfferAnswer, handleIncomingWebRtcOffer, handleIncomingAnswer, handleIncomingIceCandidate, handleUserHangUpRequest } from '../webRtc/webRtcHandler';
+import { connectToANewUser } from '../webRtc/webRtcGroupCallHandler';
 
 const SERVER = 'http://localhost:5000';
 let socket;
@@ -61,6 +62,12 @@ export const connectWithWebSocket = () => {
     socket.on('hang-up', () => {
         handleUserHangUpRequest();
     });
+
+    // Listeners related to group calls
+    socket.on('join-group-call-request', (data) => {
+        // data format: { joineePeerId, hostSocketId, localStreamId }
+        connectToANewUser(data);
+    });
 };
 
 export const registerNewUser = (username) => {
@@ -105,3 +112,8 @@ export const registerGroupCall = (data) => {
     // format of data: {username, peerId}
     socket.emit('group-call-register', data);
 };
+
+export const joinAnotherGroupCall = (data) => {
+    //format of data: { myPeerId, hostSocketId, roomId, localStreamId }
+    socket.emit('join-group-call-request', data);
+}

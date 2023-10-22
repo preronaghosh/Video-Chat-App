@@ -145,4 +145,16 @@ io.on('connection', (socket) => {
             activeGroupCallRooms: groupCallRooms
         });
     });
+
+    // when a user wants to join a group call
+    socket.on('join-group-call-request', (data) => {
+        //format of data: { myPeerId, hostSocketId, roomId, localStreamId }
+        io.to(data.roomId).emit('join-group-call-request', {
+            joineePeerId: data.peerId,
+            hostSocketId: data.hostSocketId,
+            localStreamId: data.localStreamId
+        });
+
+        socket.join(data.roomId);
+    })
 });

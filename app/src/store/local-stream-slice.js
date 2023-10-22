@@ -23,7 +23,8 @@ const localStreamSlice = createSlice({
         localCameraEnabled: true,
         localMicrophoneEnabled: true,
         localScreenShareEnabled: false,
-        groupCallActive: false
+        groupCallActive: false,
+        groupCallStreams: []
     },
     reducers: {
         setLocalStream(state, action) {
@@ -56,6 +57,9 @@ const localStreamSlice = createSlice({
         },
         setGroupCallActive(state, action) {
             state.groupCallActive = action.payload;
+        },
+        setGroupCallStreams(state, action) {
+            state.groupCallStreams = action.payload;
         }
     }    
 });

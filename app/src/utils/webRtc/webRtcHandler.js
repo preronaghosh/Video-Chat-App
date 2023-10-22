@@ -5,8 +5,11 @@ import { sendPreOffer, sendPreOfferAnswer, sendWebRtcOffer, sendWebRtcAnswer, se
 let connectedUserSocketId; // Stores currently connected user on a direct call
 let peerConnection; 
 
-const defaultConstraints = {   // Stores the default mediaStream object config
-    video: true,
+const defaultConstraints = {   // Stores the default mediaStream object config, manually set the video stream to low resolution
+    video: {
+        width: 480,
+        height: 360
+    },
     audio: true
 };
 
