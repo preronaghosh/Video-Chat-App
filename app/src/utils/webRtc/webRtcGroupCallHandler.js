@@ -1,4 +1,5 @@
 import store from '../../store/index';
+import { callStates, localStreamActions } from '../../store/local-stream-slice';
 import {registerGroupCall} from '../wssConnection/wssConnection';
 
 // Variables to store peers in a group call related data 
@@ -24,4 +25,7 @@ export const createNewGroupCall = () => {
         username: store.getState().myDashboard.username,
         peerId: myPeerId
     });
+
+    store.dispatch(localStreamActions.setGroupCallActive(true));
+    store.dispatch(localStreamActions.setCallState(callStates.InProgress));
 };
