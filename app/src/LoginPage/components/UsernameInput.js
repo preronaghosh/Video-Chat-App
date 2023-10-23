@@ -7,7 +7,7 @@ const UsernameInput = (props) => {
 
     return (
         <div className="login-page_input_container">
-        <input type='text' value={username} onChange={inputChangeHandler} placeholder='Enter your name' className="login-page_input background_main_color text_main_color"/>
+            <input type='text' value={username} onChange={inputChangeHandler} placeholder='Enter your name' className="login-page_input background_main_color text_main_color"/>
         </div>
     )
 };
