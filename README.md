@@ -19,7 +19,6 @@ WebRTC Implementation covers the following stages:
 
 **Server:** Node, Express, PeerJS, SocketIO
 
-**Testing:** React Testing Library, Jest, Redux-Mock-Store
 
 
 ## Run Locally
